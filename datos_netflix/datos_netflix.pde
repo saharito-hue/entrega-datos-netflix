@@ -1,21 +1,34 @@
-Table tabla;
+Table datos;
+HashMap<String, Integer> conteoPaises;
 
 void setup() {
-  size(400, 400);
+  size(800, 400);
+  background(255);
 
-  tabla = loadTable("netflix_titles.csv", "header");
-  
-  if (tabla == null) {
-    println("❌ No se pudo cargar el archivo.");
-    return;
+  //archivo
+  datos = loadTable("netflix_titles.csv", "header");
+
+  // mapa 
+  conteoPaises = new HashMap<String, Integer>();
+
+  // Contar
+  for (TableRow fila : datos.rows()) {
+    String paises = fila.getString("country");
+    if (paises != null && paises.length() > 0) {
+      String pais = paises.split(",")[0].trim();
+      if (conteoPaises.containsKey(pais)) {
+        conteoPaises.put(pais, conteoPaises.get(pais) + 1);
+      } else {
+        conteoPaises.put(pais, 1);
+      }
+    }
   }
 
-  println("✅ Cargado. Mostrando títulos:");
-  
-  // Recorrer y mostrar los títulos
-  for (TableRow fila : tabla.rows()) {
-    String titulo = fila.getString("title");
-    String pais = fila.getString("country");
-    println(titulo + " - " + pais);
+  // Mostrar resultados
+  for (String p : conteoPaises.keySet()) {
+    println(p + ": " + conteoPaises.get(p));
   }
+}
+
+void draw() {
 }
